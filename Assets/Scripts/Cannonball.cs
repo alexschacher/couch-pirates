@@ -44,4 +44,9 @@ public class Cannonball : MonoBehaviour
         Instantiate(cannonballSplash, transform.position, cannonballSplash.transform.rotation);
         Destroy(this.gameObject);
     }
+
+    public bool CameFromLeft()
+    {
+        return parabolaStart.x < parabolaEnd.x;
+    }
 }

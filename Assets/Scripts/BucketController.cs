@@ -51,6 +51,4 @@ public class BucketController : MonoBehaviour
         this.hasWater = hasWater;
         bucketWater.SetActive(hasWater);
     }
-
-    
 }

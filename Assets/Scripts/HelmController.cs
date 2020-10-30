@@ -6,6 +6,10 @@ public class HelmController : MonoBehaviour
 {
     [SerializeField] private GameObject wheel;
     [SerializeField] private float wheelSpinSpeed;
+    [SerializeField] private float steeringMaxTurnSpeed;
+    [SerializeField] private float steeringTurnAcceleration;
+    private float steeringTurnSpeed;
+    [SerializeField] private OceanPivotController oceanPivotController;
     private StationController stationController;
     private int playerID;
     private bool isInUse = false;
@@ -35,15 +39,70 @@ public class HelmController : MonoBehaviour
 
     private void Update()
     {
-        if (!isInUse) return;
+        GetCancel();
+        Steer();
+    }
 
-        float horizontal = Input.GetAxisRaw("Walk_H_P" + playerID);
+    private void Steer()
+    {
+        float horizontal;
+        if (isInUse)
+        {
+            horizontal = Input.GetAxisRaw("Walk_H_P" + playerID);
+        }
+        else
+        {
+            horizontal = 0f;
+        }
+
         wheel.transform.Rotate(new Vector3(0f, 0f, -horizontal * wheelSpinSpeed));
 
-        if (!Input.GetButton("Button_Left_P" + playerID) && !Input.GetButton("Button_Bottom_P" + playerID))
+        if (horizontal == 0)
         {
-            stationController.ReturnControlToPlayer();
-            isInUse = false;
+            if (steeringTurnSpeed > 0)
+            {
+                steeringTurnSpeed -= steeringTurnAcceleration * Time.deltaTime;
+                if (steeringTurnSpeed < 0)
+                {
+                    steeringTurnSpeed = 0;
+                }
+            }
+            else if (steeringTurnSpeed < 0)
+            {
+                steeringTurnSpeed += steeringTurnAcceleration * Time.deltaTime;
+                if (steeringTurnSpeed > 0)
+                {
+                    steeringTurnSpeed = 0;
+                }
+            }
         }
+        else
+        {
+            steeringTurnSpeed += -horizontal * steeringTurnAcceleration * Time.deltaTime;
+        }
+
+        if (steeringTurnSpeed > steeringMaxTurnSpeed)
+        {
+            steeringTurnSpeed = steeringMaxTurnSpeed;
+        }
+        if (steeringTurnSpeed < -steeringMaxTurnSpeed)
+        {
+            steeringTurnSpeed = -steeringMaxTurnSpeed;
+        }
+
+        oceanPivotController.SetRotationAngle(steeringTurnSpeed * Time.deltaTime);
     }
+
+    private void GetCancel()
+    {
+        if (isInUse)
+        {
+            if (!Input.GetButton("Button_Left_P" + playerID) && !Input.GetButton("Button_Bottom_P" + playerID))
+            {
+                stationController.ReturnControlToPlayer();
+                oceanPivotController.SetRotationAngle(0f);
+                isInUse = false;
+            }
+        }
+        }
 }

@@ -4,11 +4,25 @@ using UnityEngine;
 
 public class EnemyShipController : MonoBehaviour
 {
+    [InspectorButton("TakeDamage")] [SerializeField] private bool takeDamageButton;
+    [InspectorButton("ShootCannon")] [SerializeField] private bool shootCannonButton;
+
     [SerializeField] private Transform cannonTarget;
     [SerializeField] private List<CannonController> leftCannons;
     [SerializeField] private List<CannonController> rightCannons;
     [SerializeField] private float health;
-    [SerializeField] private float timeBetweenShots;
+    private float startingHealth;
+    private float currentSinkDepth;
+    private float startingSinkDepth;
+    [SerializeField] private float hitSinkSpeed;
+    [SerializeField] private float sinkDownSpeed;
+    [SerializeField] private float sinkFallbackSpeed;
+    [SerializeField] private float sinkTimeTilDestroy;
+    private float sinkTimer;
+    [SerializeField] private float maxSinkDepth;
+    [SerializeField] private float secondsBetweenShots;
+    [SerializeField] private float secondsBetweenShotsVariation;
+    private float randomTimeBetweenShots;
     private float timeBetweenShotsTimer;
     private bool onRightSide;
     private float initTime;
@@ -32,6 +46,10 @@ public class EnemyShipController : MonoBehaviour
     {
         driftCurrentAccelerationDirection.x = 1f;
         driftCurrentAccelerationDirection.y = 1f;
+        startingHealth = health;
+        startingSinkDepth = transform.position.y;
+        currentSinkDepth = startingSinkDepth;
+        randomTimeBetweenShots = Random.Range(secondsBetweenShots - secondsBetweenShotsVariation, secondsBetweenShots + secondsBetweenShotsVariation);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -49,12 +67,18 @@ public class EnemyShipController : MonoBehaviour
     {
         if (isInPosition)
         {
-            ShootCannonsOverTime();
-            Drift();
+            Sink();
+
+            if (health > 0)
+            {
+                Drift();
+                ShootCannonsOverTime();
+            }
         }
         else
         {
             MoveIntoPosition();
+            Drift();
         }
     }
   
@@ -133,12 +157,32 @@ public class EnemyShipController : MonoBehaviour
         transform.position += new Vector3(driftSpeed.x, 0f, driftSpeed.y) * Time.deltaTime;
     }
 
+    private void Sink()
+    {
+        if (health <= 0)
+        {
+            transform.Translate(0f, -sinkDownSpeed * Time.deltaTime, -sinkFallbackSpeed * Time.deltaTime);
+            sinkTimer += Time.deltaTime;
+
+            if (sinkTimer > sinkTimeTilDestroy)
+            {
+                //TestGamemodeController.INSTANCE.SpawnEnemyShip();
+                Destroy(this.gameObject);
+            }
+        }
+        else if (transform.position.y > currentSinkDepth)
+        {
+            transform.Translate(0f, -hitSinkSpeed * Time.deltaTime, 0f);
+        }
+    }
+
     private void ShootCannonsOverTime()
     {
         timeBetweenShotsTimer += Time.deltaTime;
-        if (timeBetweenShotsTimer > timeBetweenShots)
+        if (timeBetweenShotsTimer > randomTimeBetweenShots)
         {
-            timeBetweenShotsTimer -= timeBetweenShots;
+            randomTimeBetweenShots = randomTimeBetweenShots = Random.Range(secondsBetweenShots - secondsBetweenShotsVariation, secondsBetweenShots + secondsBetweenShotsVariation);
+            timeBetweenShotsTimer = 0f;
             ShootCannon();
         }
     }
@@ -160,10 +204,17 @@ public class EnemyShipController : MonoBehaviour
     private void TakeDamage()
     {
         health -= 1;
-        if (health <= 0)
+        currentSinkDepth = startingSinkDepth - maxSinkDepth + (maxSinkDepth * health / startingHealth);
+
+        if (onRightSide)
         {
-            TestGamemodeController.INSTANCE.SpawnEnemyShip();
-            Destroy(this.gameObject);
+            driftAcceleration.x = driftMaxAcceleration.x;
+            driftSpeed.x = driftMaxSpeed.x;
+        }
+        else
+        {
+            driftAcceleration.x = -driftMaxAcceleration.x;
+            driftSpeed.x = -driftMaxSpeed.x;
         }
     }
 
@@ -191,6 +242,15 @@ public class EnemyShipController : MonoBehaviour
         {
             transform.position = Vector3.Lerp(startPosition, targetPosition, fractionOfJourney);
         }
-        
+    }
+
+    public void ForceSink()
+    {
+        health = 0;
+    }
+
+    public void SetTimeBetweenShots(float seconds)
+    {
+        secondsBetweenShots = seconds;
     }
 }

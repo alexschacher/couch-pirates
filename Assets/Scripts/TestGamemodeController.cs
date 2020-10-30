@@ -17,10 +17,13 @@ public class TestGamemodeController : MonoBehaviour
     [SerializeField] private Transform enemyShipRightTargetPosition;
     [SerializeField] private Transform enemyShipLeftSpawnPoint;
     [SerializeField] private Transform enemyShipRightSpawnPoint;
-    [SerializeField] private GameObject playerShip;
+    [SerializeField] private GameObject shootTarget;
     private Vector3 hullWaterStartPosition, hullWaterFullPosition;
     private GameObject[] activeHoles;
+    private GameObject leftShip, rightShip;
     private float secondCounter;
+    public bool preventWater = false;
+    public bool preventSink = false;
 
     private void Awake()
     {
@@ -33,7 +36,7 @@ public class TestGamemodeController : MonoBehaviour
         hullWaterStartPosition = hullWater.transform.position;
         hullWaterFullPosition = hullWaterFullTransform.transform.position;
 
-        SpawnEnemyShip();
+        //SpawnEnemyShip();
     }
 
     private void Update()
@@ -54,6 +57,8 @@ public class TestGamemodeController : MonoBehaviour
 
     public void SpawnHole()
     {
+        return; // old code
+
         int randomIndex = Random.Range(0, 4);
 
         if (activeHoles[randomIndex] == null)
@@ -75,6 +80,8 @@ public class TestGamemodeController : MonoBehaviour
 
     public void FillHullWater(float amount)
     {
+        if (preventWater) return;
+
         hullWater.transform.Translate(Vector3.up * amount);
 
         if (hullWater.transform.position.y > hullWaterFullPosition.y)
@@ -96,16 +103,57 @@ public class TestGamemodeController : MonoBehaviour
     public void SpawnEnemyShip()
     {
         int random = Random.Range(0, 2);
+        if (random == 0)
+        {
+            if (leftShip == null)
+            {
+                SpawnEnemyShip(true);
+            }
+            else if (rightShip == null)
+            {
+                SpawnEnemyShip(false);
+            }
+        }
+        else
+        {
+            if (rightShip == null)
+            {
+                SpawnEnemyShip(false);
+            }
+            else if (leftShip == null)
+            {
+                SpawnEnemyShip(true);
+            }
+        }
+    }
 
-        //if (random == 0)
+    public void SpawnEnemyShip(bool onLeft)
+    {
+        if (onLeft)
         {
-           GameObject enemyShip = Instantiate(enemyShipPrefab, enemyShipLeftSpawnPoint.position, Quaternion.identity);
-           enemyShip.GetComponent<EnemyShipController>().Init(enemyShipLeftTargetPosition.position, false, playerShip.transform);
+            if (leftShip != null) return;
+
+            GameObject enemyShip = Instantiate(enemyShipPrefab, enemyShipLeftSpawnPoint.position, Quaternion.identity);
+            enemyShip.GetComponent<EnemyShipController>().Init(enemyShipLeftTargetPosition.position, false, shootTarget.transform);
+            leftShip = enemyShip;
         }
-        //else 
+        else
         {
+            if (rightShip != null) return;
+
             GameObject enemyShip = Instantiate(enemyShipPrefab, enemyShipRightSpawnPoint.position, Quaternion.identity);
-            enemyShip.GetComponent<EnemyShipController>().Init(enemyShipRightTargetPosition.position, true, playerShip.transform);
+            enemyShip.GetComponent<EnemyShipController>().Init(enemyShipRightTargetPosition.position, true, shootTarget.transform);
+            rightShip = enemyShip;
         }
+    }
+
+    public void SetHullWaterEmpty()
+    {
+        hullWater.transform.position = hullWaterStartPosition;
+    }
+
+    public void SetHullWaterFull()
+    {
+        hullWater.transform.position = hullWaterFullPosition;
     }
 }

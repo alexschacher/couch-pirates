@@ -198,7 +198,7 @@ public class CannonController : MonoBehaviour
         GameObject cannonball = Instantiate(cannonballPrefab, cannonballOrigin.transform.position, Quaternion.identity);
         cannonball.GetComponent<Cannonball>().Init(
             cannonballOrigin.transform.position,
-            targetPosition,
+            targetPosition + new Vector3(0f, -1f, 0f),
             parabolaHeight, isPlayerShot);
     }
 

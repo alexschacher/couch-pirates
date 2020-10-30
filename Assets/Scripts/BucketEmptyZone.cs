@@ -11,7 +11,7 @@ public class BucketEmptyZone : MonoBehaviour
         {
             if (interactionEvent.GetAction() != InteractionEvent.Action.Interact) return;
 
-            if (interactionEvent.GetPC().GetHeldObject() == null)
+            if (interactionEvent.GetPC().GetHeldObject() != null)
             {
                 BucketController bucket = interactionEvent.GetPC().GetHeldObject().GetComponent<BucketController>();
                 if (bucket != null)

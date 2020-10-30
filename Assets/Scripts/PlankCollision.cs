@@ -30,13 +30,12 @@ public class PlankCollision : MonoBehaviour
                 delayTimer = 0.2f;
 
                 state++;
-                if (state > 2)
+                if (state > 3)
                 {
-                    state = 2;
+                    state = 3;
                 }
 
-                // This doesnt work
-                animator.Play("PlankState1", 0, 0f);
+                animator.Play("PlankState" + state);
             }
         }
     }

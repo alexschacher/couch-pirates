@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class HullWater : MonoBehaviour
 {
-    private float amountOfWaterBucketRemoves = 0.75f;
+    [SerializeField] private float amountOfWaterBucketRemoves = 0.4f;
 
     private void OnTriggerEnter(Collider other)
     {
