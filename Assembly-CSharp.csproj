@@ -78,6 +78,8 @@
     <Compile Include="Assets\Scripts\HullWater.cs" />
     <Compile Include="Assets\Scripts\InteractionEvent.cs" />
     <Compile Include="Assets\Scripts\InvisibilityTriggerZone.cs" />
+    <Compile Include="Assets\Scripts\IslandHazard.cs" />
+    <Compile Include="Assets\Scripts\IslandHazardController.cs" />
     <Compile Include="Assets\Scripts\Ocean.cs" />
     <Compile Include="Assets\Scripts\OceanMovementController.cs" />
     <Compile Include="Assets\Scripts\OceanPivotController.cs" />
@@ -91,6 +93,7 @@
     <Compile Include="Assets\Scripts\Tools\InspectorButtonAttribute.cs" />
     <Compile Include="Assets\Scripts\Tools\MathParabola.cs" />
     <Compile Include="Assets\Scripts\WaterStream.cs" />
+    <Compile Include="Assets\Scripts\WorldBob.cs" />
     <Reference Include="UnityEngine">
       <HintPath>D:/Unity/2019.4.10f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>

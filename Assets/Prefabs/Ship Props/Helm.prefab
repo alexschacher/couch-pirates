@@ -170,9 +170,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   wheel: {fileID: 3892126796708096811}
   wheelSpinSpeed: 0.55
-  steeringMaxTurnSpeed: 7
-  steeringTurnAcceleration: 0.05
-  oceanMovementController: {fileID: 0}
+  steeringMaxTurnSpeed: 1500
+  steeringTurnAcceleration: 800
+  oceanRenderObject: {fileID: 0}
+  oceanHorizontalScrollSpeed: 0.0001
+  islandHazardController: {fileID: 0}
 --- !u!114 &4529493277397777985
 MonoBehaviour:
   m_ObjectHideFlags: 0

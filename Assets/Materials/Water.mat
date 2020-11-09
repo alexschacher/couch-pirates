@@ -87,18 +87,19 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - Vector1_558F29BA: 0.0005
+    - Vector1_8C512814: 0
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1
-    - _Choppiness: 0.5
+    - _Choppiness: 0
     - _Cull: 2
     - _Curvature: 0.004
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _EnvironmentReflections: 1
-    - _FlowSpeed: 0.0001
-    - _FlowStrength: 0.0015
+    - _FlowSpeed: 0
+    - _FlowStrength: 0
     - _FoamDistance: 1.5
     - _GlossMapScale: 1
     - _Glossiness: 0.484
@@ -121,11 +122,15 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
+    - Vector2_6745352A: {r: 0.01, g: 0, b: 0, a: 0}
+    - Vector2_71C0B281: {r: 0, g: -0.03, b: 0, a: 0}
+    - Vector2_D8F0DFAA: {r: 0, g: 0, b: 0, a: 0}
     - _BaseColor: {r: 0.0990566, g: 0.53432596, b: 1, a: 1}
     - _Color: {r: 0.0990566, g: 0.53432596, b: 1, a: 1}
     - _DarkFoamColor: {r: 0, g: 0.47576502, b: 0.8509804, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _LightFoamColor: {r: 0.25882354, g: 0.6509804, b: 1, a: 1}
+    - _ManualScrollSpeed: {r: -548108.75, g: 0, b: 0, a: 0}
     - _ScrollSpeed: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
     - _WaterColor: {r: 0, g: 0.54522705, b: 1, a: 1}

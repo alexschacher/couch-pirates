@@ -8,8 +8,11 @@ public class HelmController : MonoBehaviour
     [SerializeField] private float wheelSpinSpeed;
     [SerializeField] private float steeringMaxTurnSpeed;
     [SerializeField] private float steeringTurnAcceleration;
+    [SerializeField] private GameObject oceanRenderObject;
+    [SerializeField] private float oceanHorizontalScrollSpeed;
     private float steeringTurnSpeed;
-    [SerializeField] private OceanPivotController oceanPivotController;
+    private float oceanHorizontalOffset;
+    [SerializeField] private IslandHazardController islandHazardController;
     private StationController stationController;
     private int playerID;
     private bool isInUse = false;
@@ -45,6 +48,7 @@ public class HelmController : MonoBehaviour
 
     private void Steer()
     {
+        // Get horizontal Input
         float horizontal;
         if (isInUse)
         {
@@ -55,8 +59,7 @@ public class HelmController : MonoBehaviour
             horizontal = 0f;
         }
 
-        wheel.transform.Rotate(new Vector3(0f, 0f, -horizontal * wheelSpinSpeed));
-
+        // Slow down to a stop
         if (horizontal == 0)
         {
             if (steeringTurnSpeed > 0)
@@ -81,6 +84,7 @@ public class HelmController : MonoBehaviour
             steeringTurnSpeed += -horizontal * steeringTurnAcceleration * Time.deltaTime;
         }
 
+        // Limit maximum speed
         if (steeringTurnSpeed > steeringMaxTurnSpeed)
         {
             steeringTurnSpeed = steeringMaxTurnSpeed;
@@ -90,7 +94,11 @@ public class HelmController : MonoBehaviour
             steeringTurnSpeed = -steeringMaxTurnSpeed;
         }
 
-        oceanPivotController.SetRotationAngle(steeringTurnSpeed * Time.deltaTime);
+        // Apply speed to helm, islands, and ocean
+        wheel.transform.Rotate(new Vector3(0f, 0f, -horizontal * wheelSpinSpeed));
+        islandHazardController.Move(steeringTurnSpeed);
+        oceanHorizontalOffset += steeringTurnSpeed / 10000000 * oceanHorizontalScrollSpeed;
+        oceanRenderObject.GetComponent<Renderer>().sharedMaterial.SetVector("_ManualOffset", new Vector4(oceanHorizontalOffset, 0f, 0f, 0f));
     }
 
     private void GetCancel()
@@ -100,9 +108,8 @@ public class HelmController : MonoBehaviour
             if (!Input.GetButton("Button_Left_P" + playerID) && !Input.GetButton("Button_Bottom_P" + playerID))
             {
                 stationController.ReturnControlToPlayer();
-                oceanPivotController.SetRotationAngle(0f);
                 isInUse = false;
             }
         }
-        }
+    }
 }

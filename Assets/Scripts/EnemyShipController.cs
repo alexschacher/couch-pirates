@@ -17,6 +17,7 @@ public class EnemyShipController : MonoBehaviour
     [SerializeField] private float hitSinkSpeed;
     [SerializeField] private float sinkDownSpeed;
     [SerializeField] private float sinkFallbackSpeed;
+    [SerializeField] private float sinkFallbackSpeedWhenHitIsland;
     [SerializeField] private float sinkTimeTilDestroy;
     private float sinkTimer;
     [SerializeField] private float maxSinkDepth;
@@ -247,6 +248,12 @@ public class EnemyShipController : MonoBehaviour
     public void ForceSink()
     {
         health = 0;
+    }
+
+    public void HitIsland()
+    {
+        health = 0;
+        sinkFallbackSpeed = sinkFallbackSpeedWhenHitIsland;
     }
 
     public void SetTimeBetweenShots(float seconds)
